@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 6/45 구매 내역</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 32px 16px;
+            background: #e9e9e9;
+            font-family: "Courier New", "D2Coding", monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        /* 용지 전체 */
+        .ticket {
+            position: relative;
+            width: 420px;
+            max-width: 100%;
+            background: #fff;
+            padding: 24px 56px 24px 24px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #222;
+        }
+
+        /* 오른쪽 분홍 띠 */
+        .side-strip {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 32px;
+            background: #e8495b;
+            color: #fff;
+            writing-mode: vertical-rl;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* 상단: 로고 + QR */
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .slogan {
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            border: 3px solid #e8495b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        .logo-text small {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .logo-text strong {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .logo-text strong span {
+            font-size: 14px;
+        }
+
+        .qr {
+            display: grid;
+            grid-template-columns: repeat(11, 7px);
+            gap: 0;
+            border: 2px solid #222;
+            padding: 3px;
+        }
+        .qr i {
+            width: 7px;
+            height: 7px;
+        }
+        .qr i.on {
+            background: #222;
+        }
+
+        /* 회차 */
+        .round {
+            position: relative;
+            margin: 14px 0 6px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 10px;
+            text-align: center;
+        }
+        .watermark {
+            position: absolute;
+            font-family: Arial, sans-serif;
+            font-weight: 900;
+            font-size: 30px;
+            color: #f6c1c8;
+            letter-spacing: -1px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .round .watermark {
+            left: 0;
+            top: -4px;
+        }
+        .round span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 발행 정보 */
+        .info {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .info b {
+            display: inline-block;
+            width: 72px;
+            letter-spacing: 4px;
+        }
+        .serial {
+            font-size: 13px;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+        .serial-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px dashed #555;
+            margin: 12px 0;
+        }
+
+        /* 게임 번호 */
+        .games {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+        .game {
+            display: flex;
+            align-items: center;
+        }
+        .game .label {
+            width: 90px;
+            font-size: 16px;
+            letter-spacing: 6px;
+            white-space: nowrap;
+        }
+        .game .nums {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 금액 */
+        .price {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .price .watermark {
+            left: 0;
+            top: -18px;
+        }
+        .price span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .bottom-serial {
+            font-size: 17px;
+            letter-spacing: 1px;
+            margin: 6px 0 12px;
+            word-break: break-all;
+        }
+
+        /* 바코드 */
+        .barcode {
+            height: 48px;
+            background: repeating-linear-gradient(
+                90deg,
+                #222 0 2px, #fff 2px 3px,
+                #222 3px 4px, #fff 4px 7px,
+                #222 7px 10px, #fff 10px 11px,
+                #222 11px 12px, #fff 12px 14px
+            );
+        }
+
+        .back {
+            font-family: sans-serif;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    {% for ticket in games | batch(5) %}
+    {% set ticket_no = loop.index %}
+    <div class="ticket">
+        <div class="side-strip">
+            lotto.co.kr ■ 행운을 빕니다 ■ 1588-6450 ■ 나눔로또 ■ www.nlotto.co.kr
+        </div>
+
+        <div class="top">
+            <div>
+                <div class="slogan">『절반의 행운, 절반의 기부』</div>
+                <div class="logo">
+                    <div class="logo-icon">💰</div>
+                    <div class="logo-text">
+                        <small>나눔</small>
+                        <strong>Lotto<span>6/45</span></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="qr">
+                {% for _ in range(121) %}<i class="{{ ['on', ''] | random }}"></i>{% endfor %}
+            </div>
+        </div>
+
+        <div class="round">
+            <div class="watermark">나눔 Lotto<small>6/45</small></div>
+            <span>제 {{ ticket_no }} 회</span>
+        </div>
+
+        <div class="info">
+            {% set weekdays = ['월', '화', '수', '목', '금', '토', '일'] %}
+            <div><b>발행일</b>: {{ now.strftime('%Y/%m/%d') }} ({{ weekdays[now.weekday()] }}) {{ now.strftime('%H:%M:%S') }}</div>
+            <div><b>추첨일</b>: {{ draw_date.strftime('%Y/%m/%d') }} (토) TR:{{ range(1000000000, 9999999999) | random }}</div>
+            <div><b>지급기한</b>: {{ deadline.strftime('%Y/%m/%d') }}</div>
+        </div>
+
+        {% set serial %}{% for _ in range(7) %}{{ '%05d' | format(range(0, 99999) | random) }} {% endfor %}{% endset %}
+        <div class="serial">{{ serial }}</div>
+        <div class="serial-row">
+            <span>DNGNCH441LE5NEE2</span>
+            <span>{{ range(100000000, 999999999) | random }}/{{ '%010d' | format(ticket_no) }}</span>
+        </div>
+
+        <hr>
+
+        <div class="games">
+            {% for game in ticket %}
+            <div class="game">
+                <span class="label">{{ 'ABCDE'[loop.index0] }} 자동</span>
+                <span class="nums">
+                    {% for n in game %}<span>{{ '%02d' | format(n) }}</span>{% endfor %}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <hr>
+
+        <div class="price">
+            <div class="watermark">나눔 Lotto<small>6/45</small></div>
+            <span>금액</span>
+            <span>₩{{ '{:,}'.format(ticket | length * 1000) }}</span>
+        </div>
+
+        <div class="bottom-serial">{{ serial }}</div>
+
+        <div class="barcode"></div>
+    </div>
+    {% endfor %}
+
+    <p class="back">총 {{ games | length }}게임 · <a href="/lotto/ping">다시 구매하기</a></p>
+</body>
+</html>

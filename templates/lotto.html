@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 6/45</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        h1 {
+            margin: 0 0 8px;
+            font-size: 24px;
+            color: #222;
+        }
+        .subtitle {
+            margin: 0 0 24px;
+            color: #888;
+            font-size: 14px;
+        }
+        .balls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .ball {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+            box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.15),
+                        inset 4px 4px 8px rgba(255, 255, 255, 0.35);
+        }
+        /* 동행복권 공 색상: 1~10 노랑, 11~20 파랑, 21~30 빨강, 31~40 회색, 41~45 초록 */
+        .ball-1 { background: #fbc400; }
+        .ball-2 { background: #69c8f2; }
+        .ball-3 { background: #ff7272; }
+        .ball-4 { background: #aaaaaa; }
+        .ball-5 { background: #b0d840; }
+        .retry {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 10px 24px;
+            border-radius: 8px;
+            background: #1a5fb4;
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .retry:hover { background: #164e94; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>로또 6/45</h1>
+        <p class="subtitle">이번 주 추천 번호</p>
+        <ul class="balls">
+            {% for number in numbers %}
+            <li class="ball ball-{{ (number - 1) // 10 + 1 }}">{{ number }}</li>
+            {% endfor %}
+        </ul>
+        <a class="retry" href="">다시 뽑기</a>
+    </div>
+</body>
+</html>
